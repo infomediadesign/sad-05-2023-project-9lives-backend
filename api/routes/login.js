@@ -3,10 +3,11 @@ const UserLogin = require("../models/userLogin");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
-router.get("/", (req, res, next) => {
-  res.status(200).json({
-    message: "Logged in",
-  });
+router.post("/", async (req, res, next) => {
+  let isPassMatch = false;
+  const user = await UserLogin.findOne({ email: req.body.email }).exec();
+  isPassMatch = bcrypt.compareSync(req.body.password, user.password);
+  res.status(200).json({ m: isPassMatch });
 });
 
 module.exports = router;
