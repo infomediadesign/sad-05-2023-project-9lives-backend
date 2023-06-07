@@ -1,23 +1,22 @@
-const express = require("express");
-const app = express();
+//===================IMPORTS=======================//
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
-const userRoute = require("./routes/user")
-const authRoute = require("./routes/auth");
+const app = require("./app");
+const db = require("./db");
 
+//===================CONFIGS=======================//
 dotenv.config();
+//===================DB=======================//
+// mongoose
+//   .connect(process.env.MONGO_URI)
+//   .then(() => console.log("DB Connection is succssfull"))
+//   .catch((err) => {
+//     console.log(err);
+//   });
 
-mongoose
-    .connect(process.env.MONGO_URL)
-    .then(() => console.log("DB Connection is succssfull"))
-    .catch((err) => {
-        console.log(err);
-    });
-
-app.use(express.json());
-app.use("/api/auth", authRoute);
-app.use("/api/users", userRoute);
-
-app.listen(process.env.PORT || 5000, () => {
-    console.log("Backend server is up and running!");
+//===================SERVER=======================//
+const port = process.env.PORT || 5000;
+app.listen(port, () => {
+  console.log("Backend server is up and running!");
+  db.createConnections(process.env.MONGO_URI);
 });
