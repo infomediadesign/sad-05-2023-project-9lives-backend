@@ -17,6 +17,7 @@ const gameRoomSchema = new mongoose.Schema(
         ref: "UserLogin",
       },
     ],
+    owner: { type: String, required: true },
     createdDate: {
       type: Date,
       default: Date.now,
