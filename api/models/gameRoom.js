@@ -3,9 +3,10 @@ const mongoose = require("mongoose");
 const gameRoomSchema = new mongoose.Schema(
   {
     _id: mongoose.Types.ObjectId,
-    name: {
+    roomID: {
       type: String,
       required: true,
+      unique: true,
     },
     gameType: {
       type: String,
