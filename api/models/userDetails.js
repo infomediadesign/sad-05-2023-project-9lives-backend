@@ -11,6 +11,8 @@ const userDetailSchema = mongoose.Schema({
     },
   ],
   recents: [{ players: [String] }],
-});
+}, {collection: "user-details"});
 
-module.exports = mongoose.model("UserDetails", userDetailSchema);
+const UsersDB = mongoose.connection.useDb("usersdb");
+
+module.exports = UsersDB.model("UserDetails", userDetailSchema);
