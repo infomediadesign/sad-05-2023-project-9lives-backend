@@ -2,6 +2,6 @@ FROM node:gallium-buster
 
 WORKDIR /sad-05-2023-project-9lives-backend
 COPY .json .
-RUN npm initialise
+RUN npm install
 COPY . .
-CMD nodemon start
+CMD npm start
