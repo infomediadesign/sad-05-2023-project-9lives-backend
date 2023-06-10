@@ -10,7 +10,6 @@ const gameRoomSchema = new mongoose.Schema(
     },
     gameType: {
       type: String,
-      required: true,
     },
     players: [
       {
@@ -28,6 +27,4 @@ const gameRoomSchema = new mongoose.Schema(
 );
 
 const roomdb = mongoose.connection.useDb("roomdb");
-const GameRoom = roomdb.model("GameRoom", gameRoomSchema);
-
-module.exports = GameRoom;
+module.exports = roomdb.model("GameRoom", gameRoomSchema);
