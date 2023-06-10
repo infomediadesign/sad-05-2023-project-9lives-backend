@@ -3,13 +3,13 @@ const mongoose = require("mongoose");
 const gameRoomSchema = new mongoose.Schema(
   {
     _id: mongoose.Types.ObjectId,
-    name: {
+    roomID: {
       type: String,
       required: true,
+      unique: true,
     },
     gameType: {
       type: String,
-      required: true,
     },
     players: [
       {
@@ -17,6 +17,7 @@ const gameRoomSchema = new mongoose.Schema(
         ref: "UserLogin",
       },
     ],
+    owner: { type: String, required: true },
     createdDate: {
       type: Date,
       default: Date.now,
@@ -26,6 +27,4 @@ const gameRoomSchema = new mongoose.Schema(
 );
 
 const roomdb = mongoose.connection.useDb("roomdb");
-const GameRoom = roomdb.model("GameRoom", gameRoomSchema);
-
-module.exports = GameRoom;
+module.exports = roomdb.model("GameRoom", gameRoomSchema);

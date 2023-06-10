@@ -8,11 +8,11 @@ router.post("/", async (req, res, next) => {
   try {
     const user = await UserLogin.findOne({ email: req.body.email }).exec();
     if (!user) {
-      res.status(401).json("User not found");
+      res.status(401).json("Incorrect credentials");
     } else {
       isPassMatch = bcrypt.compareSync(req.body.password, user.password);
       if (!isPassMatch) {
-        res.status(401).json("Incorrect password");
+        res.status(401).json("Incorrect credentials");
       } else {
         const accessToken = jwt.sign(
           {
@@ -20,7 +20,7 @@ router.post("/", async (req, res, next) => {
             // isAdmin: user.isAdmin,
           },
           process.env.JWT_SEC,
-          { expiresIn: "3d" }
+          { expiresIn: "3h" }
         );
         const { password, ...others } = user._doc;
 
