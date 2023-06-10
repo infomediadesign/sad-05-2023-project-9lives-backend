@@ -2,6 +2,7 @@ const router = require("express").Router();
 const GameRoom = require("../models/gameRoom");
 const { generateRandomString } = require("../../logic/room");
 const { default: mongoose } = require("mongoose");
+const checkToken = require("../middleware/check-auth");
 
 router.get("/movie/choice", (req, res, next) => {
   res.status(200).json({
@@ -9,13 +10,13 @@ router.get("/movie/choice", (req, res, next) => {
   });
 });
 
-router.post("/room/create", (req, res, next) => {
+router.post("/room/create", checkToken, (req, res, next) => {
   const gameId = generateRandomString(8);
   console.log(gameId);
   res.status(200).json({ gameId: gameId });
 });
 
-router.patch("/room/join", async (req, res, next) => {
+router.patch("/room/join", checkToken, async (req, res, next) => {
   try {
     const room = await GameRoom.findOne({ roomID: req.body.gameID }).exec();
     if (!room) {
@@ -29,21 +30,11 @@ router.patch("/room/join", async (req, res, next) => {
             new mongoose.Types.ObjectId(req.body.userID),
           ],
         },
-        { new: true },
-        (err) => {
-          if (!err) {
-            console.log("Managed to update");
-            res.status(200).json({ message: "Added to the room", isUserIn: true });
-          } else {
-            res.status(400).json({
-              message: `Something went wrong please try again => ${err}`,
-              isUserIn: false,
-            });
-          }
-        }
+        { new: true }
       );
-      debugger;
-      res.status(200).json(updatedRoom._doc);
+      if (updatedRoom._doc.players.includes(req.body.userID)) {
+        res.status(200).json({ room: updatedRoom._doc, isUserIn: true });
+      } else res.status(200).json({ room: updatedRoom._doc, isUserIn: false });
     }
   } catch (error) {
     console.log(error.message);
