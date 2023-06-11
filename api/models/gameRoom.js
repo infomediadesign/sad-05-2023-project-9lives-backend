@@ -26,6 +26,7 @@ const gameRoomSchema = new mongoose.Schema(
       maxPlayers: { type: Number, default: 2, required: true },
       rounds: { type: Number, default: 1, required: true },
     },
+    currentRound: { type: Number, default: 1, required: true },
     owner: { type: String, required: true },
     createdDate: {
       type: Date,
