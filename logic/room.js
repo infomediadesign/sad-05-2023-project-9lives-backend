@@ -1,4 +1,5 @@
 const crypto = require("crypto");
+const GameRoom = require("../api/models/gameRoom");
 
 const generateRandomString = (length) => {
   return crypto
@@ -7,4 +8,16 @@ const generateRandomString = (length) => {
     .slice(0, length);
 };
 
-module.exports.generateRandomString = generateRandomString;
+const generateGameId = async () => {
+  let gameId = generateRandomString(8);
+  try {
+    const room = await GameRoom.findOne({ roomID: gameId }).exec();
+    if (room) {
+      generateGameId();
+    } else return gameId;
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+
+module.exports.generateGameId = generateGameId;
