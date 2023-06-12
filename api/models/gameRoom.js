@@ -2,7 +2,6 @@ const mongoose = require("mongoose");
 
 const gameRoomSchema = new mongoose.Schema(
   {
-    _id: mongoose.Types.ObjectId,
     roomID: {
       type: String,
       required: true,
@@ -14,8 +13,7 @@ const gameRoomSchema = new mongoose.Schema(
     players: [
       {
         id: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "UserLogin",
+          type: String,
           required: true,
         },
         gamerTag: { type: String, required: true },
