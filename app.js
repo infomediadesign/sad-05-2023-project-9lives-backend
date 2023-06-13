@@ -2,7 +2,8 @@
 const express = require("express");
 const cors = require("cors");
 const loginRoutes = require("./api/routes/login");
-const playground = require("./api/routes/room");
+const room = require("./api/routes/room");
+const playground = require("./api/routes/playground");
 
 //===================CONFIGS=======================//
 const app = express();
@@ -21,6 +22,7 @@ app.post("/register", (req, res, next) => {
 
 // app.use("/api/auth", authRoute);
 app.use("/api/login", loginRoutes);
+app.use("/room", room);
 app.use("/play", playground);
 
 module.exports = app;

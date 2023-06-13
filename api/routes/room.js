@@ -1,17 +1,9 @@
 const router = require("express").Router();
 const GameRoom = require("../models/gameRoom");
 const { generateGameId } = require("../../logic/roomIDGen");
-const { default: mongoose } = require("mongoose");
 const checkToken = require("../middleware/check-auth");
-const { json } = require("express");
 
-router.get("/movie/choice", (req, res, next) => {
-  res.status(200).json({
-    movie: ["detective pikachu", "batman", "avengers"],
-  });
-});
-
-router.post("/room/create", checkToken, async (req, res, next) => {
+router.post("/create", checkToken, async (req, res, next) => {
   // console.log(req.body);
   // console.log(req.userData);
   let gameId = await generateGameId();
@@ -43,7 +35,7 @@ router.post("/room/create", checkToken, async (req, res, next) => {
   }
 });
 
-router.delete("/room/delete/:roomID", checkToken, async (req, res, next) => {
+router.delete("/delete/:roomID", checkToken, async (req, res, next) => {
   try {
     const room = await GameRoom.findOne({ roomID: req.params.roomID }).exec();
     if (!!room) {
@@ -60,7 +52,7 @@ router.delete("/room/delete/:roomID", checkToken, async (req, res, next) => {
   }
 });
 
-router.patch("/room/join", checkToken, async (req, res, next) => {
+router.patch("/join", checkToken, async (req, res, next) => {
   try {
     const room = await GameRoom.findOne({ roomID: req.body.gameID }).exec();
     if (!room) {
@@ -96,7 +88,7 @@ router.patch("/room/join", checkToken, async (req, res, next) => {
   }
 });
 
-router.patch("/room/leave", checkToken, async (req, res, next) => {
+router.patch("/leave", checkToken, async (req, res, next) => {
   try {
     const room = await GameRoom.findOne({ roomID: req.body.gameID }).exec();
     if (!room) {
@@ -131,7 +123,7 @@ router.patch("/room/leave", checkToken, async (req, res, next) => {
   }
 });
 
-router.post("/room/lobby", checkToken, async (req, res, next) => {
+router.post("/lobby", checkToken, async (req, res, next) => {
   const userID = req.userData.id;
   try {
     const room = await GameRoom.findOne({ roomID: req.body.gameID }).exec();

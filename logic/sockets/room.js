@@ -8,43 +8,49 @@ const createGame = (io) => {
 
   // Handle new socket connections
   io.on("connection", (socket) => {
-    console.log("A client connected to the game namespace");
+    let gameId; // Track the game ID associated with the current socket
 
-    let roomID;
-
-    // Join a game room
+    // Join a game
     socket.on("join", async (roomDetails) => {
-      roomID = roomDetails.roomID;
+      gameId = roomDetails.roomID;
 
-      // Create a new game room if it doesn't exist
-      if (!games[roomID]) {
-        games[roomID] = {
-          roomID,
+      // Create a new game if it doesn't exist
+      if (!games[gameId]) {
+        games[gameId] = {
           word: await getRandomMovie(),
+          attemptsLeft: MAX_ATTEMPTS,
           guessedLetters: new Set(),
-          players: [...roomDetails.players],
+          players: [],
         };
       }
 
       // Add the player to the game
-      games[roomID] = { ...roomDetails, roomID };
-      socket.join(roomID);
+      games[gameId].players.push(socket.id);
+      socket.join(gameId);
+      console.log(socket.id + " connected to " + gameId);
 
-      // Emit lobby state to the player
-      // let lobbyState = {
-      //   setting: roomDetails.setting,
-      //   players: roomDetails.players,
-      // };
-      io.to(roomID).emit("lobbyState", roomDetails);
+      // Emit game state to the player
+      socket.emit("gameState", games[gameId]);
+    });
+
+    //start
+    socket.on("start", async (roomID) => {
+      const movie = await getRandomMovie();
+      io.to(roomID).emit("start", movie);
+    });
+
+    socket.on("dash", async (roomID) => {
+      const movie = await getRandomMovie();
+      io.to(roomID).emit("dash", { movie });
     });
 
     // Make a guess
     socket.on("guess", (guess) => {
-      if (!roomID || !games[roomID]) {
+      if (!gameId || !games[gameId]) {
         return;
       }
 
-      const game = games[roomID];
+      const game = games[gameId];
       if (!game.word.includes(guess)) {
         game.attemptsLeft -= 1;
       }
@@ -57,21 +63,21 @@ const createGame = (io) => {
         game.word.split("").every((letter) => game.guessedLetters.has(letter));
 
       // Emit game state to all players in the game room
-      io.to(roomID).emit("gameState", game);
+      io.to(gameId).emit("gameState", game);
 
       // Emit game over event if the game is over
       if (isGameOver) {
-        io.to(roomID).emit("gameOver");
+        io.to(gameId).emit("gameOver");
       }
     });
 
     // Handle socket disconnection
     socket.on("disconnect", () => {
-      if (!roomID || !games[roomID]) {
+      if (!gameId || !games[gameId]) {
         return;
       }
 
-      const game = games[roomID];
+      const game = games[gameId];
       const playerIndex = game.players.indexOf(socket.id);
       if (playerIndex !== -1) {
         game.players.splice(playerIndex, 1);
@@ -79,7 +85,7 @@ const createGame = (io) => {
 
       // If no players left in the game, delete it
       if (game.players.length === 0) {
-        delete games[roomID];
+        delete games[gameId];
       }
     });
   });

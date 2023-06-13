@@ -20,6 +20,8 @@ const gameRoomSchema = new mongoose.Schema(
         score: { type: Number, default: 0 },
         attemptsLeft: { type: Number, default: 9 },
         timeLeft: { type: Number, default: 60 },
+        encodedWord: { type: String },
+        incorrectLetters: { type: new mongoose.Types.Array, default: [] },
       },
     ],
     setting: {
