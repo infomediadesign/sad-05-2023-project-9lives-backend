@@ -1,6 +1,6 @@
 const router = require("express").Router();
 const GameRoom = require("../models/gameRoom");
-const { generateGameId } = require("../../logic/room");
+const { generateGameId } = require("../../logic/roomIDGen");
 const { default: mongoose } = require("mongoose");
 const checkToken = require("../middleware/check-auth");
 const { json } = require("express");
