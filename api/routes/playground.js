@@ -43,27 +43,89 @@ router.post("/room/create", checkToken, async (req, res, next) => {
   }
 });
 
+router.delete("/room/delete", checkToken, async (req, res, next) => {
+  try {
+    const room = await GameRoom.findOne({ owner: req.userData.email }).exec();
+    if (!!room) {
+      await GameRoom.findByIdAndDelete(room._id);
+    }
+    res.status(200).json({
+      roomDetails: { players: [], setting: {} },
+      message: "room deleted",
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+});
+
 router.patch("/room/join", checkToken, async (req, res, next) => {
   try {
     const room = await GameRoom.findOne({ roomID: req.body.gameID }).exec();
     if (!room) {
       res.status(401).json("Room does not exists");
-    } else {
+    } else if (
+      room.players.filter((player) => player.id === req.userData.id).length ===
+      0
+    ) {
       const updatedRoom = await GameRoom.findByIdAndUpdate(
         room._id,
         {
           players: [
             ...room.players,
-            new mongoose.Types.ObjectId(req.body.userID),
+            { id: req.userData.id, gamerTag: req.body.playerName },
           ],
         },
         { new: true }
       );
-      if (updatedRoom._doc.players.includes(req.body.userID)) {
+      if (
+        updatedRoom._doc.players.filter(
+          (player) => player.id === req.userData.id
+        ).length !== 0
+      ) {
         // players is array of objects
-        res.status(200).json({ room: updatedRoom._doc, isUserIn: true });
-      } else res.status(200).json({ room: updatedRoom._doc, isUserIn: false });
-    }
+        res.status(200).json({ roomDetails: updatedRoom._doc, isUserIn: true });
+      } else
+        res
+          .status(200)
+          .json({ roomDetails: updatedRoom._doc, isUserIn: false });
+    } else res.status(200).json({ roomDetails: room._doc, isUserIn: true });
+  } catch (error) {
+    console.log(error.message);
+  }
+});
+
+router.patch("/room/leave", checkToken, async (req, res, next) => {
+  try {
+    const room = await GameRoom.findOne({ roomID: req.body.gameID }).exec();
+    if (!room) {
+      res.status(401).json("Room does not exists");
+    } else if (
+      room.players.filter((player) => player.id === req.userData.id).length !==
+      0
+    ) {
+      const updatedRoom = await GameRoom.findByIdAndUpdate(
+        room._id,
+        {
+          players: [
+            ...room.players.filter((player) => player.id !== req.userData.id),
+          ],
+        },
+        { new: true }
+      );
+      if (
+        updatedRoom._doc.players.filter(
+          (player) => player.id === req.userData.id
+        ).length !== 0
+      ) {
+        // players is array of objects
+        res.status(200).json({ roomDetails: updatedRoom._doc, isUserIn: true });
+      } else
+        res
+          .status(200)
+          .json({ roomDetails: updatedRoom._doc, isUserIn: false });
+    } else res.status(200).json({ roomDetails: room._doc, isUserIn: true });
   } catch (error) {
     console.log(error.message);
   }

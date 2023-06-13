@@ -18,6 +18,8 @@ const gameRoomSchema = new mongoose.Schema(
         },
         gamerTag: { type: String, required: true },
         score: { type: Number, default: 0 },
+        attemptsLeft: { type: Number, default: 9 },
+        timeLeft: { type: Number, default: 60 },
       },
     ],
     setting: {

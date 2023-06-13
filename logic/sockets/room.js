@@ -11,30 +11,31 @@ const createGame = (io) => {
     console.log("A client connected to the game namespace");
 
     let roomID;
-    // create a game
-    socket.on("join", (roomIdParam) => {
-      roomID = roomIdParam;
-      // Create a new game if it doesn't exist
+
+    // Join a game room
+    socket.on("join", async (roomDetails) => {
+      roomID = roomDetails.roomID;
+
+      // Create a new game room if it doesn't exist
       if (!games[roomID]) {
         games[roomID] = {
-          word: getRandomMovie(), // Replace with your word generation logic
-          attemptsLeft: MAX_ATTEMPTS,
+          roomID,
+          word: await getRandomMovie(),
           guessedLetters: new Set(),
-          players: [],
+          players: [...roomDetails.players],
         };
       }
-    });
-
-    // Join a game
-    socket.on("join", (roomIdParam) => {
-      roomID = roomIdParam;
 
       // Add the player to the game
-      games[roomID].players.push(socket.id);
+      games[roomID] = { ...roomDetails, roomID };
       socket.join(roomID);
 
-      // Emit game state to the player
-      socket.emit("gameState", games[roomID]);
+      // Emit lobby state to the player
+      // let lobbyState = {
+      //   setting: roomDetails.setting,
+      //   players: roomDetails.players,
+      // };
+      io.to(roomID).emit("lobbyState", roomDetails);
     });
 
     // Make a guess
