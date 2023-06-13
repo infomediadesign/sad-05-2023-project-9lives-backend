@@ -8,7 +8,7 @@ on:
 
 env:
   DOCKER_USER: kishor97p
-  DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+  DOCKER_PASSWORD: Kspatil@97
   DOCKER_REPO: ${{ secrets.DOCKER_REPO }}
 
 jobs:
@@ -30,7 +30,7 @@ jobs:
       - name: Docker Login
         env:
           DOCKER_USER: kishor97p
-          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+          DOCKER_PASSWORD: Kspatil@97
         run: |
           docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
 
