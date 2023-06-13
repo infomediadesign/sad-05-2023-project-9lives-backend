@@ -9,7 +9,7 @@ on:
 env:
   DOCKER_USER: ${{ secrets.DOCKER_USER }}
   DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-  DOCKER_REPO: kishor97p/sad_05_2023_project_9lives
+  DOCKER_REPO: ${{ secrets.DOCKER_REPO }}
 
 jobs:
   build:
@@ -35,7 +35,7 @@ jobs:
           docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
 
       - name: Rename the tag
-        run: docker tag ninelives-backend:1.0 kishor97p/sad_05_2023_project_9lives:ninelives-backend
+        run: docker tag ninelives-backend:1.0 ${{ secrets.DOCKER_REPO }}:ninelives-backend
 
       - name: Push to Dockerhub
         run: docker push kishor97p/sad_05_2023_project_9lives:ninelives-backend
