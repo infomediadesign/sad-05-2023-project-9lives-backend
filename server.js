@@ -5,27 +5,51 @@ const app = require("./app");
 const db = require("./db");
 const http = require("http");
 const socketIO = require("socket.io");
+const { createGame } = require("./logic/sockets/room");
 
 //===================CONFIGS=======================//
 dotenv.config();
 const server = http.createServer(app);
-const io = socketIO(server);
+const io = socketIO(server, {
+  cors: {
+    origin: "http://localhost:3000",
+    methods: ["GET", "POST"],
+  },
+});
 
 //===================WEB SOCKETS=======================//
-io.on("connection", (socket) => {
-  console.log("A client connected on socket");
 
-  // Event handling
-  socket.on("chat message", (message) => {
-    console.log("Received message:", message);
-    // Broadcast the message to all connected clients
-    io.emit("chat message", message);
-  });
+// Create a namespace for the game
+const gameNamespace = io.of("/game");
 
-  socket.on("disconnect", () => {
-    console.log("A client disconnected");
-  });
-});
+createGame(gameNamespace);
+
+// gameNamespace.on('connection', (socket) => {
+//   console.log('A client connected to the game namespace');
+
+//   // Join the game room
+//   socket.on('join', (roomId) => {
+//     socket.join(roomId);
+//     console.log(`Client joined room ${roomId}`);
+//   });
+
+//   // Handle game-related events
+//   socket.on('move', (roomId, moveData) => {
+//     // Get the clients in the room
+//     const clientsInRoom = io.of('/game').in(roomId).clients;
+
+//     // Broadcast the move event to selected clients in the room
+//     clientsInRoom.forEach((client) => {
+//       if (client.id !== socket.id) {
+//         client.emit('move', moveData);
+//       }
+//     });
+//   });
+
+//   socket.on('disconnect', () => {
+//     console.log('A client disconnected from the game namespace');
+//   });
+// });
 
 //===================SERVER=======================//
 const port = process.env.PORT || 5000;
