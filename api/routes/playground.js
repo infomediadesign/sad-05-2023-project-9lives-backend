@@ -43,9 +43,9 @@ router.post("/room/create", checkToken, async (req, res, next) => {
   }
 });
 
-router.delete("/room/delete", checkToken, async (req, res, next) => {
+router.delete("/room/delete/:roomID", checkToken, async (req, res, next) => {
   try {
-    const room = await GameRoom.findOne({ owner: req.userData.email }).exec();
+    const room = await GameRoom.findOne({ roomID: req.params.roomID }).exec();
     if (!!room) {
       await GameRoom.findByIdAndDelete(room._id);
     }
