@@ -2,7 +2,7 @@
 const express = require("express");
 const cors = require("cors");
 const loginRoutes = require("./api/routes/login");
-const playground = require("./api/routes/playground");
+const playground = require("./api/routes/room");
 
 //===================CONFIGS=======================//
 const app = express();
