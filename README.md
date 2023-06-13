@@ -9,4 +9,4 @@ Rules of using GitHub:
 
 
 TO download Docker container directly from the Docker HUB -
-Link to the Repo: https://hub.docker.com/repository/docker/kishor97p/sad-05-2023-project-9lives/general
+Link to the Repo: https://hub.docker.com/r/kishor97p/sad_05_2023_project_9lives
