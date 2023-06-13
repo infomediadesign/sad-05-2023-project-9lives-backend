@@ -60,7 +60,7 @@ router.patch("/join", checkToken, async (req, res, next) => {
     } else if (
       room.players.filter((player) => player.id === req.userData.id).length ===
         0 &&
-      room.players.length <= room.setting.maxPlayers
+      room.players.length < room.setting.maxPlayers
     ) {
       const updatedRoom = await GameRoom.findByIdAndUpdate(
         room._id,
