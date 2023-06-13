@@ -1,3 +1,5 @@
+const { getRandomMovie } = require("../RandomMovie");
+
 const createGame = (io) => {
   const MAX_ATTEMPTS = 9;
 
@@ -6,22 +8,26 @@ const createGame = (io) => {
 
   // Handle new socket connections
   io.on("connection", (socket) => {
-    console.log('A client connected to the game namespace');
-    
+    console.log("A client connected to the game namespace");
+
     let roomID;
-    // Join a game
+    // create a game
     socket.on("join", (roomIdParam) => {
       roomID = roomIdParam;
-
       // Create a new game if it doesn't exist
       if (!games[roomID]) {
         games[roomID] = {
-          word: "hangman", // Replace with your word generation logic
+          word: getRandomMovie(), // Replace with your word generation logic
           attemptsLeft: MAX_ATTEMPTS,
           guessedLetters: new Set(),
           players: [],
         };
       }
+    });
+
+    // Join a game
+    socket.on("join", (roomIdParam) => {
+      roomID = roomIdParam;
 
       // Add the player to the game
       games[roomID].players.push(socket.id);
