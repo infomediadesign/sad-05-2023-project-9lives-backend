@@ -38,4 +38,4 @@ jobs:
         run: docker tag ninelives-backend:1.0 ${{ secrets.DOCKER_REPO }}:ninelives-backend
 
       - name: Push to Dockerhub
-        run: docker push kishor97p/sad_05_2023_project_9lives:ninelives-backend
+        run: docker push ${{ secrets.DOCKER_REPO }}:ninelives-backend
