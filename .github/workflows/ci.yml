@@ -2,9 +2,9 @@ name: DEPLOY TO DOCKERHUB FOR BACKEND
 
 on:
   push:
-    branches: ["ci_kp"]
+    branches: ["dev"]
   pull_request:
-    branches: ["ci_kp"]
+    branches: ["dev"]
 
 env:
   DOCKER_USER: ${{ secrets.DOCKER_USER }}
