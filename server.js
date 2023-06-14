@@ -58,3 +58,4 @@ server.listen(port, () => {
   console.log("Backend server is up and running!");
   db.createConnections(process.env.MONGO_URI);
 });
+
