@@ -4,7 +4,8 @@
   "description": "Application code in NodeJs for 9Lives web-browser game.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon server.js"
   },
   "repository": {
     "type": "git",
@@ -23,9 +24,16 @@
   "homepage": "https://github.com/infomediadesign/sad-05-2023-project-9lives-backend#readme",
   "dependencies": {
     "axios": "^1.4.0",
+    "bcrypt": "^5.1.0",
+    "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
+    "crypto-js": "^4.1.1",
+    "dotenv": "^16.1.0",
     "express": "^4.18.2",
-    "mongoose": "^7.2.1",
-    "nodemon": "^2.0.22"
+    "jsonwebtoken": "^9.0.0",
+    "mongoose": "^7.2.2",
+    "morgan": "^1.10.0",
+    "nodemon": "^2.0.22",
+    "socket.io": "^4.6.2"
   }
 }

@@ -1,0 +1,41 @@
+name: DEPLOY TO DOCKERHUB FOR BACKEND
+
+on:
+  push:
+    branches: ["dev"]
+  pull_request:
+    branches: ["dev"]
+
+env:
+  DOCKER_USER: ${{ secrets.DOCKER_USER }}
+  DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+  DOCKER_REPO: ${{ secrets.DOCKER_REPO }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.x]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Build and Tag Docker Image
+        run: |-
+          docker build -t ninelives-backend:1.0 .
+
+      - name: Docker Login
+        env:
+          DOCKER_USER: ${{ secrets.DOCKER_USER }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+        run: |
+          docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+
+      - name: Rename the tag
+        run: docker tag ninelives-backend:1.0 ${{ secrets.DOCKER_REPO }}:ninelives-backend
+
+      - name: Push to Dockerhub
+        run: docker push ${{ secrets.DOCKER_REPO }}:ninelives-backend
